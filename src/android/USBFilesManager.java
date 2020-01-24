@@ -48,10 +48,10 @@ import java.io.FileInputStream;
 
 import java.util.ArrayList;
 
-public class FolderChooser extends CordovaPlugin {
+public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_GET_BACKUPS_FROM_USB = "getBackupsFromUSB";
-    private static final String ACTION_MOVE_BACKUP_FROM_USB = "moveBackupFromUSB";
+    private static final String ACTION_MOVE_BACKUP_FROM_USB = "copyBackupFromUSB";
     private String inputFileName = null;
 
     private CallbackContext callback;
@@ -67,14 +67,14 @@ public class FolderChooser extends CordovaPlugin {
             CallbackContext callbackContext
     ) {
         try {
-            if (action.equals(FolderChooser.ACTION_SAVE_FILE_TO_USB)) {
+            if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.chooseFile(callbackContext, args.getString(0));
                 return true;
-            } else if (action.equals(FolderChooser.ACTION_GET_BACKUPS_FROM_USB)) {
+            } else if (action.equals(USBFilesManager.ACTION_GET_BACKUPS_FROM_USB)) {
                 this.getBackupsListByUri(callbackContext, args.getString(0));
                 return true;
-            } else if (action.equals(FolderChooser.ACTION_MOVE_BACKUP_FROM_USB)) {
-                this.moveBackupFromUSB(callbackContext, args.getString(0), args.getString(1));
+            } else if (action.equals(USBFilesManager.ACTION_MOVE_BACKUP_FROM_USB)) {
+                this.copyBackupFromUSB(callbackContext, args.getString(0), args.getString(1));
                 return true;
             }
         } catch (JSONException err) {
@@ -86,7 +86,7 @@ public class FolderChooser extends CordovaPlugin {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == FolderChooser.PICK_FOLDER_REQUEST && this.callback != null) {
+        if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     JSONObject result = new JSONObject();
@@ -116,7 +116,7 @@ public class FolderChooser extends CordovaPlugin {
         this.inputFileName = fileName;
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Intent chooser = Intent.createChooser(intent, "Open folder");
-        cordova.startActivityForResult(this, chooser, FolderChooser.PICK_FOLDER_REQUEST);
+        cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_FOLDER_REQUEST);
 
         PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult.setKeepCallback(true);
@@ -152,7 +152,7 @@ public class FolderChooser extends CordovaPlugin {
         return mimeType;
     }
 
-    private void moveBackupFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
+    private void copyBackupFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
         InputStream in = null;
         OutputStream out = null;
         String error = null;

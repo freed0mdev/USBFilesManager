@@ -8,6 +8,6 @@ exports.getBackupsFromUSB = function (uri, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "getBackupsFromUSB", [uri]);
 };
 
-exports.moveBackupFromUSB = function (uri, fileName, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "moveBackupFromUSB", [uri, fileName]);
+exports.copyBackupFromUSB = function (uri, fileName, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "copyBackupFromUSB", [uri, fileName]);
 };
