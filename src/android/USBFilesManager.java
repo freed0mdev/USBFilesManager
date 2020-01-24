@@ -110,7 +110,7 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private void saveFileToTargetDirectory(CallbackContext callbackContext) {
+    private void saveFileToTargetDirectory(CallbackContext callbackContext, String fileName) {
         this.inputFileName = fileName;
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Intent chooser = Intent.createChooser(intent, "Open folder");
