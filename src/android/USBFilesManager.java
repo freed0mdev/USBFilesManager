@@ -148,7 +148,7 @@ public class USBFilesManager extends CordovaPlugin {
                     result.put(file.getName(), resultFile);
                 }
             }
-
+            resultFile.put("test", "TEST");
             callbackContext.success(result);
         } catch (Exception err) {
             callbackContext.error("Failed to read file: " + err.toString());
@@ -164,8 +164,6 @@ public class USBFilesManager extends CordovaPlugin {
         InputStream in = null;
         OutputStream out = null;
         String error = null;
-        String mimeType = getFileMimeType(fileName);
-
         String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
         try {
@@ -205,7 +203,6 @@ public class USBFilesManager extends CordovaPlugin {
 //        InputStream in = null;
 //        OutputStream out = null;
 //        String error = null;
-//        String mimeType = getFileMimeType(fileName);
 //
 //        String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
