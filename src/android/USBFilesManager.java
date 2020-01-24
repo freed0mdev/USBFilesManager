@@ -205,7 +205,7 @@ public class USBFilesManager extends CordovaPlugin {
         File file = new File(fileUri);
 
         try {
-            JSONObject result = new JSONObject();Z
+            JSONObject result = new JSONObject();
             try {
                 deleted = file.delete();
             } catch (FileNotFoundException fnfe1) {
