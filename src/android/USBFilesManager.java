@@ -47,7 +47,7 @@ public class USBFilesManager extends CordovaPlugin {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_GET_FILES_FROM_USB)) {
-                this.getFilesListFromDirectory(callbackContext);
+                this.getFilesFromTargetDirectory(callbackContext);
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_GET_FILES_FROM_USB_BY_URI)) {
                 this.getFilesListByUri(callbackContext, args.getString(0));
@@ -91,11 +91,6 @@ public class USBFilesManager extends CordovaPlugin {
                     Uri uri = data.getData();
 
                     getFilesListByUri(this.callback, uri);
-
-                    result.put("error", errorCopy);
-                    result.put("uri", uri);
-
-                    this.callback.success(result);
                 } catch (Exception err) {
                     this.callback.error("Failed to copy file: " + err.toString());
                 }
@@ -133,7 +128,7 @@ public class USBFilesManager extends CordovaPlugin {
         callbackContext.sendPluginResult(pluginResult);
     }
 
-    private void getFilesListByUri(CallbackContext callbackContext, String uri) {
+    private void getFilesListByUri(CallbackContext callbackContext, Uri uri) {
         try {
             JSONObject result = new JSONObject();
             DocumentFile filesDir = DocumentFile.fromTreeUri(cordova.getActivity(), Uri.parse(uri));
