@@ -200,12 +200,14 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private void deleteFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
+        Boolean deleted = null;
+        String error = null;
         File file = new File(fileUri);
 
         try {
-            JSONObject result = new JSONObject();
+            JSONObject result = new JSONObject();Z
             try {
-                boolean deleted = file.delete();
+                deleted = file.delete();
             } catch (FileNotFoundException fnfe1) {
                 error = fnfe1.getMessage();
             } catch (Exception e) {
