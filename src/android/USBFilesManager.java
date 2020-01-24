@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
-    private static final String ACTION_GET_BACKUPS_FROM_USB = "getBackupsFromUSB";
-    private static final String ACTION_GET_BACKUPS_FROM_USB_BY_URI = "getBackupsFromUSBByUri";
-    private static final String ACTION_COPY_BACKUP_FROM_USB = "copyBackupFromUSB";
+    private static final String ACTION_GET_FILES_FROM_USB = "getFilesFromUSB";
+    private static final String ACTION_GET_FILES_FROM_USB_BY_URI = "getFilesFromUSBByUri";
+    private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
     private String inputFileName = null;
 
     private CallbackContext callback;
@@ -46,14 +46,14 @@ public class USBFilesManager extends CordovaPlugin {
             if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
-            } else if (action.equals(USBFilesManager.ACTION_GET_BACKUPS_FROM_USB)) {
+            } else if (action.equals(USBFilesManager.ACTION_GET_FILES_FROM_USB)) {
                 this.getFilesListFromDirectory(callbackContext);
                 return true;
-            } else if (action.equals(USBFilesManager.ACTION_GET_BACKUPS_FROM_USB_BY_URI)) {
+            } else if (action.equals(USBFilesManager.ACTION_GET_FILES_FROM_USB_BY_URI)) {
                 this.getFilesListByUri(callbackContext, args.getString(0));
                 return true;
-            } else if (action.equals(USBFilesManager.ACTION_COPY_BACKUP_FROM_USB)) {
-                this.copyBackupFromUSB(callbackContext, args.getString(0), args.getString(1));
+            } else if (action.equals(USBFilesManager.ACTION_COPY_FILE_FROM_USB)) {
+                this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
                 return true;
             }
         } catch (JSONException err) {
@@ -136,8 +136,8 @@ public class USBFilesManager extends CordovaPlugin {
     private void getFilesListByUri(CallbackContext callbackContext, String uri) {
         try {
             JSONObject result = new JSONObject();
-            DocumentFile backupsDir = DocumentFile.fromTreeUri(cordova.getActivity(), Uri.parse(uri));
-            DocumentFile[] documents = backupsDir.listFiles();
+            DocumentFile filesDir = DocumentFile.fromTreeUri(cordova.getActivity(), Uri.parse(uri));
+            DocumentFile[] documents = filesDir.listFiles();
 
             for (final DocumentFile file : documents) {
                 JSONObject resultFile = new JSONObject();
@@ -161,7 +161,7 @@ public class USBFilesManager extends CordovaPlugin {
         return mimeType;
     }
 
-    private void copyBackupFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
+    private void copyFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
         InputStream in = null;
         OutputStream out = null;
         String error = null;

@@ -4,14 +4,14 @@ exports.saveFileToUSB = function (fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [fileName]);
 };
 
-exports.getBackupsFromUSB = function (onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "getBackupsFromUSB", [uri]);
+exports.getFilesFromUSB = function (onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "getFilesFromUSB", [uri]);
 };
 
-exports.getBackupsFromUSBByUri = function (uri, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "getBackupsFromUSBByUri", [uri]);
+exports.getFilesFromUSBByUri = function (uri, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "getFilesFromUSBByUri", [uri]);
 };
 
-exports.copyBackupFromUSB = function (uri, fileName, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "copyBackupFromUSB", [uri, fileName]);
+exports.copyFileFromUSB = function (uri, fileName, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "copyFileFromUSB", [uri, fileName]);
 };

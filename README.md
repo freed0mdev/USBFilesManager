@@ -14,9 +14,9 @@ Although in the global scope, it is not available until after the `this.platform
     this.platform.ready().then(() => {
         if (cordova.plugins['USBFilesManager']) {
             cordova.plugins['USBFilesManager'].saveFileToUSB(FILE_NAME, res => {}, err => {});
-            cordova.plugins['USBFilesManager'].getBackupsFromUSB(res => {}, err => {});
-            cordova.plugins['USBFilesManager'].getBackupsFromUSBByUri(URI, res => {}, err => {});
-            cordova.plugins['USBFilesManager'].copyBackupFromUSB(URI, FILE_NAME, res => {}, err => {});
+            cordova.plugins['USBFilesManager'].getFilesFromUSB(res => {}, err => {});
+            cordova.plugins['USBFilesManager'].getFilesFromUSBByUri(URI, res => {}, err => {});
+            cordova.plugins['USBFilesManager'].copyFileFromUSB(URI, FILE_NAME, res => {}, err => {});
         }
     });
 
@@ -47,7 +47,7 @@ Returns:
 Here is an example of a getting list files from chosen directory.
 
 ```js
-    cordova.plugins['USBFilesManager'].getBackupsFromUSB(res => {}, err => {});
+    cordova.plugins['USBFilesManager'].getFilesFromUSB(res => {}, err => {});
 ```
 Returns:
 ```
@@ -63,7 +63,7 @@ Here is an example of a getting list files from recently chosen directory uri.
 
 ```js
     const URI = 'content://com.externalstorage....';
-    cordova.plugins['USBFilesManager'].getBackupsFromUSBByUri(URI, res => {}, err => {});
+    cordova.plugins['USBFilesManager'].getFilesFromUSBByUri(URI, res => {}, err => {});
 ```
 Returns:
 ```
@@ -78,8 +78,8 @@ Returns:
 Here is an example of a saving file to the USB storage.
 
 ```js
-    const URI = uri returned from the getBackupsFromUSB method;
-    cordova.plugins['USBFilesManager'].copyBackupFromUSB(URI, FILE_NAME, res => {}, err => {});
+    const URI = uri returned from the getFilesFromUSB method;
+    cordova.plugins['USBFilesManager'].copyFileFromUSB(URI, FILE_NAME, res => {}, err => {});
 ```
 Returns:
 ```
