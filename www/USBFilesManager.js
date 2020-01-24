@@ -16,6 +16,6 @@ exports.copyFileFromUSB = function (uri, fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "copyFileFromUSB", [uri, fileName]);
 };
 
-exports.deleteFileFromUSB = function (fileName, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "deleteFileFromUSB", [fileName]);
+exports.deleteFileFromUSB = function (uri, fileName, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "deleteFileFromUSB", [uri, fileName]);
 };
