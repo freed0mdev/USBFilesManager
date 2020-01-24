@@ -15,3 +15,7 @@ exports.getFilesFromUSBByUri = function (uri, onSuccess, onFail) {
 exports.copyFileFromUSB = function (uri, fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "copyFileFromUSB", [uri, fileName]);
 };
+
+exports.deleteFileFromUSB = function (fileName, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "deleteFileFromUSB", [fileName]);
+};
