@@ -148,7 +148,7 @@ public class USBFilesManager extends CordovaPlugin {
                     result.put(file.getName(), resultFile);
                 }
             }
-            resultFile.put("test", "TEST");
+
             callbackContext.success(result);
         } catch (Exception err) {
             callbackContext.error("Failed to read file: " + err.toString());
