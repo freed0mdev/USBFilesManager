@@ -5,7 +5,7 @@ exports.saveFileToUSB = function (fileName, onSuccess, onFail) {
 };
 
 exports.getFilesFromUSB = function (onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "getFilesFromUSB", [uri]);
+    exec(onSuccess, onFail, "USBFilesManager", "getFilesFromUSB");
 };
 
 exports.getFilesFromUSBByUri = function (uri, onSuccess, onFail) {

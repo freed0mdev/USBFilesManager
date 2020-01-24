@@ -29,6 +29,7 @@ public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_GET_FILES_FROM_USB = "getFilesFromUSB";
     private static final String ACTION_GET_FILES_FROM_USB_BY_URI = "getFilesFromUSBByUri";
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
+    private static final String ACTION_DELETE_FILE_FROM_USB = "deleteFileFromUSB";
     private String inputFileName = null;
 
     private CallbackContext callback;
@@ -54,6 +55,9 @@ public class USBFilesManager extends CordovaPlugin {
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE_FROM_USB)) {
                 this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
+                return true;
+            } else if (action.equals(USBFilesManager.ACTION_DELETE_FILE_FROM_USB)) {
+                this.deleteFileFromUSB(callbackContext, args.getString(0), args.getString(1));
                 return true;
             }
         } catch (JSONException err) {
@@ -194,6 +198,47 @@ public class USBFilesManager extends CordovaPlugin {
             callbackContext.success(result);
         } catch (Exception err) {
             callbackContext.error("Failed to move file: " + err.toString());
+        }
+    }
+
+    private void deleteFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
+//        InputStream in = null;
+//        OutputStream out = null;
+//        String error = null;
+//        String mimeType = getFileMimeType(fileName);
+//
+//        String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
+
+        try {
+            JSONObject result = new JSONObject();
+
+
+//            try {
+//                in = cordova.getActivity().getContentResolver().openInputStream(Uri.parse(fileUri));
+//                out = cordova.getActivity().getContentResolver().openOutputStream(Uri.fromFile(new File(targetPath)));
+//
+//                byte[] buffer = new byte[1024];
+//                int read;
+//                while ((read = in.read(buffer)) != -1) {
+//                    out.write(buffer, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//
+//            } catch (FileNotFoundException fnfe1) {
+//                error = fnfe1.getMessage();
+//            } catch (Exception e) {
+//                error = e.getMessage();
+//            }
+//            result.put("error", error);
+//            result.put("fileName", fileName);
+//            result.put("fileUri", fileUri);
+//            result.put("url", targetPath);
+            callbackContext.success(result);
+        } catch (Exception err) {
+            callbackContext.error("Failed to remove file: " + err.toString());
         }
     }
 
