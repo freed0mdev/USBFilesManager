@@ -208,12 +208,11 @@ public class USBFilesManager extends CordovaPlugin {
             JSONObject result = new JSONObject();
             try {
                 deleted = file.delete();
-            } catch (FileNotFoundException fnfe1) {
-                error = fnfe1.getMessage();
             } catch (Exception e) {
                 error = e.getMessage();
             }
 
+            result.put("error", error);
             result.put("deleted", deleted);
             callbackContext.success(result);
         } catch (Exception err) {
