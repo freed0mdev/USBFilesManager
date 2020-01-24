@@ -1,4 +1,4 @@
-package cordova-plugin-usbfilesmanager;
+package cordova.plugin.usbfilesmanager;
 
 import android.content.ContentResolver;
 import android.content.Intent;
