@@ -55,7 +55,7 @@ public class USBFilesManager extends CordovaPlugin {
                 this.selectDirPath(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE)) {
-                this.copyFile(callbackContext, args.getString(0), args.getString(1));
+//                this.copyFile(callbackContext, args.getString(0), args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
@@ -245,7 +245,7 @@ public class USBFilesManager extends CordovaPlugin {
 
         try {
             DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            copy(new File(inputPath + "/" + inputFile), new File(newFile.getUri()));
+            copy(new File(inputPath + "/" + inputFile), new File(newFile.getUri().getPath()));
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {

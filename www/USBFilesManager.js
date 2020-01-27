@@ -4,6 +4,10 @@ exports.selectDirPath = function (path, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "selectDirPath", [path]);
 };
 
+exports.copyFile = function (source, destination, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "copyFile", [source, destination]);
+};
+
 exports.saveFileToUSB = function (fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [fileName]);
 };
