@@ -233,7 +233,7 @@ public class USBFilesManager extends CordovaPlugin {
         return error;
     }
 
-    private void writeFile(in, out) {
+    private void writeFile(InputStream in, OutputStream out) {
         byte[] buffer = new byte[1024];
         int read;
         while ((read = in.read(buffer)) != -1) {
