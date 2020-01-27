@@ -1,5 +1,9 @@
 var exec = require('cordova/exec');
 
+exports.selectDirPath = function (path, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "selectDirPath", [path]);
+};
+
 exports.saveFileToUSB = function (fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [fileName]);
 };

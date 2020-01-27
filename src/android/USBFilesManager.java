@@ -17,8 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
@@ -26,6 +27,9 @@ import java.util.ArrayList;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
+    private static final String ACTION_COPY_FILE = "copyFile";
+    private static final String ACTION_DELETE_FILE = "deleteFile";
+    private static final String ACTION_GET_FILES = "getFiles";
 
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_GET_FILES_FROM_USB = "getFilesFromUSB";
@@ -50,8 +54,10 @@ public class USBFilesManager extends CordovaPlugin {
             if (action.equals(USBFilesManager.ACTION_SELECT_DIR_PATH)) {
                 this.selectDirPath(callbackContext, args.getString(0));
                 return true;
-            }
-            if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
+            } else if (action.equals(USBFilesManager.ACTION_COPY_FILE)) {
+                this.copyFile(callbackContext, args.getString(0), args.getString(1));
+                return true;
+            } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_GET_FILES_FROM_USB)) {
@@ -239,7 +245,7 @@ public class USBFilesManager extends CordovaPlugin {
 
         try {
             DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            copy(new File(inputPath + "/" + inputFile), newFile.getUri());
+            copy(new File(inputPath + "/" + inputFile), new File(newFile.getUri()));
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
