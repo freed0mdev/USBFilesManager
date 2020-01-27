@@ -170,7 +170,7 @@ public class USBFilesManager extends CordovaPlugin {
         try {
             in = cordova.getActivity().getContentResolver().openInputStream(Uri.parse(fileUri));
             out = cordova.getActivity().getContentResolver().openOutputStream(Uri.fromFile(new File(targetPath)));
-            error = writeFile(in, out);
+            writeFile(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
@@ -215,7 +215,7 @@ public class USBFilesManager extends CordovaPlugin {
             out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
             in = new FileInputStream(inputPath + "/" + inputFile);
 
-            error = writeFile(in, out);
+            writeFile(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
@@ -225,21 +225,14 @@ public class USBFilesManager extends CordovaPlugin {
         return error;
     }
 
-    private void writeFile(InputStream in, OutputStream out) {
-        String error = null;
-        try {
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-        } catch (IOException e) {
-            error = e.getMessage();
+    private void writeFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
         }
-
-        return error;
+        in.close();
+        out.flush();
+        out.close();
     }
 }
