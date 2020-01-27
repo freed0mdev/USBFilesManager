@@ -161,26 +161,31 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private void copyFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
-        InputStream in = null;
-        OutputStream out = null;
-        String error = null;
-        JSONObject result = new JSONObject();
-        String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
-
         try {
-            in = cordova.getActivity().getContentResolver().openInputStream(Uri.parse(fileUri));
-            out = cordova.getActivity().getContentResolver().openOutputStream(Uri.fromFile(new File(targetPath)));
-            writeFile(in, out);
-        } catch (FileNotFoundException fnfe1) {
-            error = fnfe1.getMessage();
-        } catch (Exception e) {
-            error = e.getMessage();
+            InputStream in = null;
+            OutputStream out = null;
+            String error = null;
+            String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
+
+            try {
+                in = cordova.getActivity().getContentResolver().openInputStream(Uri.parse(fileUri));
+                out = cordova.getActivity().getContentResolver().openOutputStream(Uri.fromFile(new File(targetPath)));
+                writeFile(in, out);
+            } catch (FileNotFoundException fnfe1) {
+                error = fnfe1.getMessage();
+            } catch (Exception e) {
+                error = e.getMessage();
+            }
+
+            JSONObject result = new JSONObject();
+            result.put("error", error);
+            result.put("fileName", fileName);
+            result.put("fileUri", fileUri);
+            result.put("url", targetPath);
+            callbackContext.success(result);
+        } catch (Exception err) {
+            callbackContext.error("Failed to copy file from USB: " + err.toString());
         }
-        result.put("error", error);
-        result.put("fileName", fileName);
-        result.put("fileUri", fileUri);
-        result.put("url", targetPath);
-        callbackContext.success(result);
     }
 
     private void deleteFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
