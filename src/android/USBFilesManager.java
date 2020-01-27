@@ -25,6 +25,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class USBFilesManager extends CordovaPlugin {
+    private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
+
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_GET_FILES_FROM_USB = "getFilesFromUSB";
     private static final String ACTION_GET_FILES_FROM_USB_BY_URI = "getFilesFromUSBByUri";
@@ -34,8 +36,9 @@ public class USBFilesManager extends CordovaPlugin {
 
     private CallbackContext callback;
 
-    private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 1;
-    private static final int PICK_FOLDER_REQUEST_FOR_GET = 2;
+    private static final int PICK_FOLDER_REQUEST = 1;
+    private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
+    private static final int PICK_FOLDER_REQUEST_FOR_GET = 3;
 
     @Override
     public boolean execute(
@@ -44,6 +47,10 @@ public class USBFilesManager extends CordovaPlugin {
             CallbackContext callbackContext
     ) {
         try {
+            if (action.equals(USBFilesManager.ACTION_SELECT_DIR_PATH)) {
+                this.selectDirPath(callbackContext, args.getString(0));
+                return true;
+            }
             if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
@@ -69,7 +76,21 @@ public class USBFilesManager extends CordovaPlugin {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
+        if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST && this.callback != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    JSONObject result = new JSONObject();
+                    Uri uri = data.getData();
+                    result.put("uri", uri);
+                    this.callback.success(result);
+                } catch (Exception err) {
+                    this.callback.error("Failed to copy file: " + err.toString());
+                }
+            } else {
+                this.callback.error("Folder URI was null.");
+            }
+
+        } else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     JSONObject result = new JSONObject();
@@ -107,6 +128,17 @@ public class USBFilesManager extends CordovaPlugin {
         } else {
             this.callback.error(resultCode);
         }
+    }
+
+    private void selectDirPath(CallbackContext callbackContext, String fileName) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Intent chooser = Intent.createChooser(intent, "Open folder");
+        cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE);
+
+        PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
+        pluginResult.setKeepCallback(true);
+        this.callback = callbackContext;
+        callbackContext.sendPluginResult(pluginResult);
     }
 
     private void saveFileToTargetDirectory(CallbackContext callbackContext, String fileName) {
@@ -161,7 +193,7 @@ public class USBFilesManager extends CordovaPlugin {
             String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
             try {
-                copy(Uri.parse(fileUri), new File(targetPath));
+                copy(new File(fileUri), new File(targetPath));
             } catch (FileNotFoundException fnfe1) {
                 error = fnfe1.getMessage();
             } catch (Exception e) {
@@ -207,7 +239,7 @@ public class USBFilesManager extends CordovaPlugin {
 
         try {
             DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            copy(inputPath + "/" + inputFile, newFile.getUri());
+            copy(new File(inputPath + "/" + inputFile), newFile.getUri());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
