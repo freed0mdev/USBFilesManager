@@ -101,8 +101,18 @@ public class USBFilesManager extends CordovaPlugin {
                 try {
                     JSONObject result = new JSONObject();
                     Uri uri = data.getData();
+                    String errorCopy = null;
 
-                    String errorCopy = copyFile(this.inputFileName, uri);
+                    try {
+                        String mimeType = "application/" + this.inputFileName.substring(this.inputFileName.lastIndexOf(".") + 1, this.inputFileName.length());
+                        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
+                        DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
+                        copy(new File(getAppExternalDir() + "/" + this.inputFileName), new File(newFile.getUri().getPath()));
+                    } catch (FileNotFoundException fnfe1) {
+                        errorCopy = fnfe1.getMessage();
+                    } catch (Exception e) {
+                        errorCopy = e.getMessage();
+                    }
 
                     result.put("error", errorCopy);
                     result.put("uri", uri);
@@ -235,24 +245,9 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private String copyFile(String inputFile, Uri treeUri) {
-        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
-        InputStream in = null;
-        OutputStream out = null;
-        String error = null;
-        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), treeUri);
-        String mimeType = "application/" + inputFile.substring(inputFile.lastIndexOf(".") + 1, inputFile.length());
-
-        try {
-            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            copy(new File(inputPath + "/" + inputFile), new File(newFile.getUri().getPath()));
-        } catch (FileNotFoundException fnfe1) {
-            error = fnfe1.getMessage();
-        } catch (Exception e) {
-            error = e.getMessage();
-        }
-
-        return error;
+    private String getAppExternalDir() {
+        String appExternalPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+        return appExternalPath;
     }
 
     public static void copy(File src, File dst) throws IOException {
