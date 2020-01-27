@@ -223,7 +223,7 @@ public class USBFilesManager extends CordovaPlugin {
         try {
             JSONObject result = new JSONObject();
             try {
-                deleted = new File(fileUri).delete();
+                deleted = DocumentFile.fromSingleUri(cordova.getActivity().getApplicationContext(), Uri.parse(fileUri)).delete();
             } catch (Exception e) {
                 error = e.getMessage();
             }
