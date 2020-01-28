@@ -235,38 +235,30 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private static void copy(InputStream in, File dst) throws IOException {
-        try (OutputStream out = new FileOutputStream(dst)) {
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
+    private static void copy(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
         }
+        in.close();
+        out.flush();
+        out.close();
     }
 
-    private String copyFile(String inputFile, Uri treeUri) {
+    private String copyFile(String inputFile, Uri destinationDirUri) {
         String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
         InputStream in = null;
         OutputStream out = null;
         String error = null;
-        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), treeUri);
+        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), destinationDirUri);
         String mimeType = getFileMimeType(inputFile);
 
         try {
             DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
             out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
             in = new FileInputStream(inputPath + "/" + inputFile);
-
-            byte[] buffer = new byte[1024];
-            int read;
-            while ((read = in.read(buffer)) != -1) {
-                out.write(buffer, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-
+            copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
