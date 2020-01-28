@@ -275,4 +275,9 @@ public class USBFilesManager extends CordovaPlugin {
 
         return error;
     }
+
+    private static String getFileMimeType(String fileName) {
+        String mimeType = "application/" + fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
+        return mimeType;
+    }
 }
