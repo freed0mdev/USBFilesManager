@@ -182,7 +182,7 @@ public class USBFilesManager extends CordovaPlugin {
                     resultFile.put("name", file.getName());
                     resultFile.put("url", file.getUri());
                     resultFile.put("type", file.getType());
-                    resultFile.put("dirUri", file.getType());
+                    resultFile.put("dirUri", uri);
                     result.put(resultFile);
                 }
             }
