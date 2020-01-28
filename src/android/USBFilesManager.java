@@ -62,7 +62,7 @@ public class USBFilesManager extends CordovaPlugin {
 //                this.deleteFile(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_GET_FILES)) {
-//                this.getFiles(callbackContext, args.getString(0));
+                this.getFilesListByUri(callbackContext, args.getString(0));
                 return true;
 
 
