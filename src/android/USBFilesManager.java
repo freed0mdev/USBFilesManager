@@ -127,7 +127,7 @@ public class USBFilesManager extends CordovaPlugin {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     JSONObject result = new JSONObject();
-                    Uri uri = data.getData().toString();
+                    String uri = data.getData().toString();
 
                     getFilesListByUri(this.callback, uri);
                 } catch (Exception err) {
