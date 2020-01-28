@@ -93,7 +93,7 @@ public class USBFilesManager extends CordovaPlugin {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == USBFilesManager.PICK_DIR_REQUEST && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
-                this.callback.success(data.getData());
+                this.callback.success(data.getData().toString());
             } else {
                 this.callback.error("Directory URI was null.");
             }
