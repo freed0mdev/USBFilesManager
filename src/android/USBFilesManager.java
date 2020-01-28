@@ -171,7 +171,7 @@ public class USBFilesManager extends CordovaPlugin {
 
     private void getFilesListByUri(CallbackContext callbackContext, Uri uri) {
         try {
-            JSONObject result = new JSONObject();
+            ArrayList<String> result = new ArrayList<String>();
             DocumentFile filesDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
             DocumentFile[] documents = filesDir.listFiles();
 
@@ -182,7 +182,7 @@ public class USBFilesManager extends CordovaPlugin {
                     resultFile.put("name", file.getName());
                     resultFile.put("url", file.getUri());
                     resultFile.put("type", file.getType());
-                    result.put(file.getName(), resultFile);
+                    result.add(resultFile);
                 }
             }
 
