@@ -146,8 +146,6 @@ public class USBFilesManager extends CordovaPlugin {
 
     private void selectDirPath(CallbackContext callbackContext, String initialPath) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-
-        intent.setType("application/*");
         Intent chooser = Intent.createChooser(intent, "Open folder");
 
         if (initialPath != null && !initialPath.isEmpty()) {
