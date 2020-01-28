@@ -8,6 +8,16 @@ exports.copyFile = function (source, destination, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "copyFile", [source, destination]);
 };
 
+exports.deleteFile = function (uri, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "deleteFile", [uri]);
+};
+
+exports.getFiles = function (dirUri, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "getFiles", [dirUri]);
+};
+
+
+
 exports.saveFileToUSB = function (fileName, onSuccess, onFail) {
     exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [fileName]);
 };

@@ -40,7 +40,7 @@ public class USBFilesManager extends CordovaPlugin {
 
     private CallbackContext callback;
 
-    private static final int PICK_FOLDER_REQUEST = 1;
+    private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
     private static final int PICK_FOLDER_REQUEST_FOR_GET = 3;
 
@@ -91,21 +91,20 @@ public class USBFilesManager extends CordovaPlugin {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST && this.callback != null) {
+        if (requestCode == USBFilesManager.PICK_DIR_REQUEST && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
-                try {
-                    JSONObject result = new JSONObject();
-                    Uri uri = data.getData();
-                    result.put("uri", uri);
-                    this.callback.success(result);
-                } catch (Exception err) {
-                    this.callback.error("Failed to copy file: " + err.toString());
-                }
+                this.callback.success(data.getData());
             } else {
-                this.callback.error("Folder URI was null.");
+                this.callback.error("Directory URI was null.");
             }
+        }
 
-        } else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
+
+
+
+
+
+        else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     JSONObject result = new JSONObject();
@@ -147,8 +146,7 @@ public class USBFilesManager extends CordovaPlugin {
     private void selectDirPath(CallbackContext callbackContext, String fileName) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Intent chooser = Intent.createChooser(intent, "Open folder");
-        cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE);
-
+        cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_DIR_REQUEST);
         PluginResult pluginResult = new PluginResult(PluginResult.Status.NO_RESULT);
         pluginResult.setKeepCallback(true);
         this.callback = callbackContext;
