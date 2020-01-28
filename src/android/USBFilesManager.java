@@ -194,12 +194,17 @@ public class USBFilesManager extends CordovaPlugin {
 
     private void copyFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
         try {
+            InputStream in = null;
+            OutputStream out = null;
             String error = null;
+
             String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
             try {
+                in = new FileInputStream(new File(fileUri));
+                out = new OutputStream(new File(targetPath));
 
-                copy(new FileInputStream(new File(fileUri)), new File(targetPath));
+                copy(in, out);
             } catch (FileNotFoundException fnfe1) {
                 error = fnfe1.getMessage();
             } catch (Exception e) {
