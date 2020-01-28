@@ -246,7 +246,7 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private String getAppExternalDir() {
-        String appExternalPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+        String appExternalPath = cordova.getActivity().getApplicationContext().getFilesDir(null).getAbsolutePath();
         return appExternalPath;
     }
 

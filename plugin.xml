@@ -16,5 +16,10 @@
         <config-file parent="/*" target="AndroidManifest.xml"></config-file>
         <source-file src="src/android/USBFilesManager.java"
             target-dir="src/cordova/plugin/usbfilesmanager/USBFilesManager" />
+        <config-file parent="/manifest" target="AndroidManifest.xml">
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+            <uses-permission android:name="android.permission.MANAGE_DOCUMENTS" />
+        </config-file>
     </platform>
 </plugin>
