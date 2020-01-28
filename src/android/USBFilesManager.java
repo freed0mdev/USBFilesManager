@@ -107,7 +107,7 @@ public class USBFilesManager extends CordovaPlugin {
                         String mimeType = "application/" + this.inputFileName.substring(this.inputFileName.lastIndexOf(".") + 1, this.inputFileName.length());
                         DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                         DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
-                        copy(new File(getAppExternalDir() + "/" + this.inputFileName), new File(newFile.getUri().getPath()));
+                        copy(new File(cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + this.inputFileName), new File(newFile.getUri().getPath()));
                     } catch (FileNotFoundException fnfe1) {
                         errorCopy = fnfe1.getMessage();
                     } catch (Exception e) {
@@ -243,11 +243,6 @@ public class USBFilesManager extends CordovaPlugin {
         } catch (Exception err) {
             callbackContext.error("Failed to remove file: " + err.toString());
         }
-    }
-
-    private String getAppExternalDir() {
-        String appExternalPath = cordova.getActivity().getApplicationContext().getCacheDir().getAbsolutePath();
-        return appExternalPath;
     }
 
     public static void copy(File src, File dst) throws IOException {
