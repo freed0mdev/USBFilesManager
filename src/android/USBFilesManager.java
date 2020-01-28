@@ -55,8 +55,17 @@ public class USBFilesManager extends CordovaPlugin {
                 this.selectDirPath(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE)) {
-//                this.copyFile(callbackContext, args.getString(0), args.getString(1));
+//                this.copydFile(callbackContext, args.getString(0), args.getString(1));
                 return true;
+            } else if (action.equals(USBFilesManager.ACTION_DELETE_FILE)) {
+//                this.deleteFile(callbackContext, args.getString(0));
+                return true;
+            } else if (action.equals(USBFilesManager.ACTION_GET_FILES)) {
+//                this.getFiles(callbackContext, args.getString(0));
+                return true;
+
+
+
             } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
                 this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
@@ -160,6 +169,7 @@ public class USBFilesManager extends CordovaPlugin {
 
     private void getFilesFromTargetDirectory(CallbackContext callbackContext) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.setType("application/zip");
         Intent chooser = Intent.createChooser(intent, "Open folder");
         cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_FOLDER_REQUEST_FOR_GET);
 
