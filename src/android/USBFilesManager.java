@@ -101,18 +101,7 @@ public class USBFilesManager extends CordovaPlugin {
                 try {
                     JSONObject result = new JSONObject();
                     Uri uri = data.getData();
-                    String errorCopy = null;
-
-                    try {
-                        String mimeType = "application/" + this.inputFileName.substring(this.inputFileName.lastIndexOf(".") + 1, this.inputFileName.length());
-                        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
-                        DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
-                        copy(new FileInputStream(cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + this.inputFileName), new File(newFile.getUri().getPath()));
-                    } catch (FileNotFoundException fnfe1) {
-                        errorCopy = fnfe1.getMessage();
-                    } catch (Exception e) {
-                        errorCopy = e.getMessage();
-                    }
+                    String errorCopy = copyFile(this.inputFileName, uri);
 
                     result.put("error", errorCopy);
                     result.put("uri", uri);
@@ -254,5 +243,36 @@ public class USBFilesManager extends CordovaPlugin {
                 out.write(buf, 0, len);
             }
         }
+    }
+
+    private String copyFile(String inputFile, Uri treeUri) {
+        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+        InputStream in = null;
+        OutputStream out = null;
+        String error = null;
+        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), treeUri);
+        String mimeType = getFileMimeType(inputFile);
+
+        try {
+            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
+            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+            in = new FileInputStream(inputPath + "/" + inputFile);
+
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+        } catch (FileNotFoundException fnfe1) {
+            error = fnfe1.getMessage();
+        } catch (Exception e) {
+            error = e.getMessage();
+        }
+
+        return error;
     }
 }
