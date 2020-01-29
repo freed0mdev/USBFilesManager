@@ -54,7 +54,7 @@ public class USBFilesManager extends CordovaPlugin {
                 this.selectDirPath(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE)) {
-//                this.copydFile(callbackContext, args.getString(0), args.getString(1));
+//                this.copyFile(callbackContext, args.getString(0), args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_DELETE_FILE)) {
                 this.deleteFile(callbackContext, args.getString(0));
@@ -107,10 +107,17 @@ public class USBFilesManager extends CordovaPlugin {
             if (resultCode == Activity.RESULT_OK) {
                 try {
                     JSONObject result = new JSONObject();
+                    String errorCopy = null;
                     Uri uri = data.getData();
                     String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
                     File f = new File(inputPath + "/" + this.inputFileName);
-                    String errorCopy = copyFile(this.inputFileName, uri);
+
+                    if (f.exists()) {
+                        errorCopy = copyFile(this.inputFileName, uri);
+                    } else {
+                        this.callback.error("File not found.");
+                        return;
+                    }
 
                     result.put("sourceFileSize", f.length());
                     result.put("sourceFileExists", f.exists());
