@@ -239,12 +239,13 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private void deleteFile(CallbackContext callbackContext, String fileUri) {
+        Boolean deleted = false;
         String error = null;
 
         try {
             JSONObject result = new JSONObject();
             try {
-                boolean deleted = DocumentFile.fromSingleUri(cordova.getActivity().getApplicationContext(), Uri.parse(fileUri)).delete();
+                deleted = DocumentFile.fromSingleUri(cordova.getActivity().getApplicationContext(), Uri.parse(fileUri)).delete();
             } catch (Exception e) {
                 error = e.getMessage();
             }
