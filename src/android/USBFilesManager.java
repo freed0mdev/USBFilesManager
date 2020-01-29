@@ -115,7 +115,7 @@ public class USBFilesManager extends CordovaPlugin {
                     String errorCopy = copyFile(this.inputFileName, uri);
 
                     result.put("sourceFileSize", f.length());
-                    result.put("sourceFileExists", file.exists());
+                    result.put("sourceFileExists", f.exists());
                     result.put("error", errorCopy);
                     result.put("uri", uri);
 
