@@ -38,9 +38,7 @@ public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
     private static final String ACTION_DELETE_FILE_FROM_USB = "deleteFileFromUSB";
     private String inputFileName = null;
-
     private CallbackContext callback;
-
     private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
     private static final int PICK_FOLDER_REQUEST_FOR_GET = 3;
@@ -59,7 +57,7 @@ public class USBFilesManager extends CordovaPlugin {
 //                this.copydFile(callbackContext, args.getString(0), args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_DELETE_FILE)) {
-//                this.deleteFile(callbackContext, args.getString(0));
+                this.deleteFile(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_GET_FILES)) {
                 this.getFilesListByUri(callbackContext, args.getString(0));
@@ -80,7 +78,7 @@ public class USBFilesManager extends CordovaPlugin {
                 this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_DELETE_FILE_FROM_USB)) {
-                this.deleteFileFromUSB(callbackContext, args.getString(0), args.getString(1));
+                this.deleteFile(callbackContext, args.getString(0));
                 return true;
             }
         } catch (JSONException err) {
@@ -240,14 +238,13 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private void deleteFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
-        Boolean deleted = null;
+    private void deleteFile(CallbackContext callbackContext, String fileUri) {
         String error = null;
 
         try {
             JSONObject result = new JSONObject();
             try {
-                deleted = DocumentFile.fromSingleUri(cordova.getActivity().getApplicationContext(), Uri.parse(fileUri)).delete();
+                Boolean deleted = DocumentFile.fromSingleUri(cordova.getActivity().getApplicationContext(), Uri.parse(fileUri)).delete();
             } catch (Exception e) {
                 error = e.getMessage();
             }
