@@ -13,7 +13,6 @@ import java.lang.Exception;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
-import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -282,10 +281,7 @@ public class USBFilesManager extends CordovaPlugin {
             DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
             out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
             in = new FileInputStream(inputPath + "/" + inputFile);
-
-
-            copyFileUsingJava7Files(new File(inputPath + "/" + inputFile), new File(newFile.getUri().getPath()));
-//            copy(in, out);
+            copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
