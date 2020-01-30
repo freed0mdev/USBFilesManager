@@ -250,17 +250,21 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private static int copy(InputStream in, OutputStream out) throws IOException {
+    private static JSONObject copy(InputStream in, OutputStream out) throws IOException {
+        JSONObject result = new JSONObject();
         byte[] buffer = new byte[1024];
         int i = 0;
         int read;
+        result.put("cursorBefore", i);
         while ((read = in.read(buffer)) > 0) {
+            result.put("lastBytes", read);
             out.write(buffer, 0, read);
             i++;
         }
         in.close();
         out.close();
-        return i;
+        result.put("cursorAfter", i);
+        return result;
     }
 
     private JSONObject copyFile(String inputFile, Uri destinationDirUri) {
@@ -284,7 +288,7 @@ public class USBFilesManager extends CordovaPlugin {
             result.put("destinationFileExists", newFile.exists());
             result.put("destinationFileSize", newFile.length());
             result.put("destinationFileCanWrite", newFile.canWrite());
-            result.put("copyPosition", copy(in, out));
+            result.put("copyResult", copy(in, out));
             result.put("destinationFileSizeAfterCopy", newFile.length());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
