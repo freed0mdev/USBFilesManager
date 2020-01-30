@@ -250,7 +250,7 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private static int copy(InputStream in, OutputStream out) throws IOException {
+    private static void copy(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int i = 0;
         int read;
@@ -277,20 +277,20 @@ public class USBFilesManager extends CordovaPlugin {
             in = new FileInputStream(inputPath);
             out = cordova.getActivity().getContentResolver().openOutputStream(newFileUri);
 
-            if (!new File(destinationDirUri + "/" + inputFile).getParentFile().exists()) {
-                new File(destinationDirUri + "/" + inputFile).getParentFile().mkdirs();
+            if (!new File(pickedDir).exists()) {
+                new File(pickedDir).mkdirs();
             }
-            if (!new File(destinationDirUri + "/" + inputFile).exists()) {
-                new File(destinationDirUri + "/" + inputFile).createNewFile();
+            if (!new File(pickedDir + "/" + inputFile).exists()) {
+                new File(pickedDir + "/" + inputFile).createNewFile();
             }
 
-            result.put("uri", destinationDirUri);
+            result.put("pickedDir", pickedDir);
             result.put("fileName", inputFile);
             result.put("sourceFileSize", new File(inputPath).length());
             result.put("sourceFileExists", new File(inputPath).exists());
             result.put("copyPosition", copy(in, out));
-            result.put("destinationFileExists", new File(destinationDirUri + "/" + inputFile).exists());
-            result.put("destinationFileSize", new File(destinationDirUri + "/" + inputFile).length());
+            result.put("destinationFileExists", new File(pickedDir + "/" + inputFile).exists());
+            result.put("destinationFileSize", new File(pickedDir + "/" + inputFile).length());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
