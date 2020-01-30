@@ -273,6 +273,11 @@ public class USBFilesManager extends CordovaPlugin {
             Uri newFileUri = pickedDir.createFile(mimeType, inputFile).getUri();
             in = new FileInputStream(inputPath);
             out = cordova.getActivity().getContentResolver().openOutputStream(newFileUri);
+
+            if (!new File(destinationDirUri).getParentFile().exists()) {
+                new File(destinationDirUri).getParentFile().mkdirs();
+            }
+
             result.put("uri", destinationDirUri);
             result.put("sourceFileSize", new File(inputPath).length());
             result.put("sourceFileExists", new File(inputPath).exists());
