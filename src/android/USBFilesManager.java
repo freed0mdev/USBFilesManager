@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.nio.Files;
+import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
@@ -284,7 +284,7 @@ public class USBFilesManager extends CordovaPlugin {
             out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
             in = new FileInputStream(inputPath + "/" + inputFile);
 
-            Files.copy(new File(inputPath + "/" + inputFile).toPath(), new File(newFile.getUri().toString()).toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(new File(inputPath + "/" + inputFile).toPath(), new File(newFile.getUri().getPath()).toPath(), StandardCopyOption.REPLACE_EXISTING);
 //            copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
