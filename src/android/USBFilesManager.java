@@ -252,18 +252,23 @@ public class USBFilesManager extends CordovaPlugin {
 
     private static JSONObject copy(InputStream in, OutputStream out) throws IOException {
         JSONObject result = new JSONObject();
-        byte[] buffer = new byte[1024];
-        int i = 0;
-        int read;
-        result.put("cursorBefore", i);
-        while ((read = in.read(buffer)) > 0) {
-            result.put("lastBytes", read);
-            out.write(buffer, 0, read);
-            i++;
+        try {
+            byte[] buffer = new byte[1024];
+            int i = 0;
+            int read;
+            result.put("cursorBefore", i);
+            while ((read = in.read(buffer)) > 0) {
+                result.put("lastBytes", read);
+                out.write(buffer, 0, read);
+                i++;
+            }
+            in.close();
+            out.close();
+            result.put("cursorAfter", i);
+        } catch (JSONException e) {
+
         }
-        in.close();
-        out.close();
-        result.put("cursorAfter", i);
+
         return result;
     }
 
