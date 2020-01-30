@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.nio.channels.FileChannel;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
@@ -281,8 +282,8 @@ public class USBFilesManager extends CordovaPlugin {
         String mimeType = getFileMimeType(inputFile);
 
         try {
-            sourceChannel = new FileInputStream(inputPath + "/" + inputFile).getChannel();
-            destChannel = new FileOutputStream(destinationDirUri + "/" + inputFile).getChannel();
+            sourceChannel = new FileInputStream(new File(inputPath + "/" + inputFile)).getChannel();
+            destChannel = new FileOutputStream(new File(destinationDirUri + "/" + inputFile)).getChannel();
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
 
 //            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
