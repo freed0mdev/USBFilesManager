@@ -261,7 +261,7 @@ public class USBFilesManager extends CordovaPlugin {
         out.close();
     }
 
-    private String copyFile(String inputFile, Uri destinationDirUri) {
+    private JSONObject copyFile(String inputFile, Uri destinationDirUri) {
         JSONObject result = new JSONObject();
         String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
         InputStream in = null;
