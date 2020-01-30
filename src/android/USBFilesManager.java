@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class USBFilesManager extends CordovaPlugin {
@@ -271,6 +270,9 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private String copyFile(String inputFile, Uri destinationDirUri) {
+        FileChannel sourceChannel = null;
+        FileChannel destChannel = null;
+
         String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
         InputStream in = null;
         OutputStream out = null;
@@ -279,15 +281,21 @@ public class USBFilesManager extends CordovaPlugin {
         String mimeType = getFileMimeType(inputFile);
 
         try {
-            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-            in = new FileInputStream(inputPath + "/" + inputFile);
-            Files.copy(new File(inputPath + "/" + inputFile).toPath(), new File(destinationDirUri + "/" + inputFile).toPath());
+            sourceChannel = new FileInputStream(inputPath + "/" + inputFile).getChannel();
+            destChannel = new FileOutputStream(destinationDirUri + "/" + inputFile).getChannel();
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+
+//            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
+//            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+//            in = new FileInputStream(inputPath + "/" + inputFile);
 //            copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
             error = e.getMessage();
+        } finally {
+            sourceChannel.close();
+            destChannel.close();
         }
 
         return error;
