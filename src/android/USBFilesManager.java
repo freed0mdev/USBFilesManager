@@ -273,24 +273,17 @@ public class USBFilesManager extends CordovaPlugin {
         String mimeType = getFileMimeType(inputFile);
 
         try {
-            Uri newFileUri = pickedDir.createFile(mimeType, inputFile).getUri();
+            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
             in = new FileInputStream(inputPath);
-            out = cordova.getActivity().getContentResolver().openOutputStream(newFileUri);
-
-            if (!new File(pickedDir).exists()) {
-                new File(pickedDir).mkdirs();
-            }
-            if (!new File(pickedDir + "/" + inputFile).exists()) {
-                new File(pickedDir + "/" + inputFile).createNewFile();
-            }
+            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
             result.put("pickedDir", pickedDir);
             result.put("fileName", inputFile);
             result.put("sourceFileSize", new File(inputPath).length());
             result.put("sourceFileExists", new File(inputPath).exists());
             result.put("copyPosition", copy(in, out));
-            result.put("destinationFileExists", new File(pickedDir + "/" + inputFile).exists());
-            result.put("destinationFileSize", new File(pickedDir + "/" + inputFile).length());
+            result.put("destinationFileExists", newFile.exists());
+            result.put("destinationFileSize", newFile.length());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
