@@ -110,7 +110,7 @@ public class USBFilesManager extends CordovaPlugin {
 
                     JSONObject result = copyFile(this.inputFileName, uri);
 
-                    this.callback.success(copyResult);
+                    this.callback.success(result);
                 } catch (Exception err) {
                     this.callback.error("Failed to copy file: " + err.toString());
                 }
