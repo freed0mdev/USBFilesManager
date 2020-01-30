@@ -250,7 +250,7 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private static void copy(InputStream in, OutputStream out) throws IOException {
+    private static int copy(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int i = 0;
         int read;
