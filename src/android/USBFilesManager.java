@@ -109,13 +109,9 @@ public class USBFilesManager extends CordovaPlugin {
                     JSONObject result = new JSONObject();
                     String errorCopy = null;
                     Uri uri = data.getData();
-                    String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
-                    File f = new File(inputPath + "/" + this.inputFileName);
 
-                    errorCopy = copyFile(this.inputFileName, uri);
-                    result.put("sourceFileSize", f.length());
-                    result.put("sourceFileExists", f.exists());
-                    result.put("error", errorCopy);
+                    copyResult = copyFile(this.inputFileName, uri);
+                    result.put("copyResult", copyResult);
                     result.put("uri", uri);
 
                     this.callback.success(result);
@@ -270,7 +266,8 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private String copyFile(String inputFile, Uri destinationDirUri) {
-        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath();
+        JSONObject result = new JSONObject();
+        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() "/" + inputFile;
         InputStream in = null;
         OutputStream out = null;
         String error = null;
@@ -278,17 +275,19 @@ public class USBFilesManager extends CordovaPlugin {
         String mimeType = getFileMimeType(inputFile);
 
         try {
-            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-            in = new FileInputStream(inputPath + "/" + inputFile);
+            Uri newFileUri = pickedDir.createFile(mimeType, inputFile).getUri();
+            out = cordova.getActivity().getContentResolver().openOutputStream(newFileUri);
+            result.put("sourceFileSize", new File(inputPath).length());
+            result.put("sourceFileExists", new File(inputPath).exists());
+            in = new FileInputStream(inputPath);
             copy(in, out);
         } catch (FileNotFoundException fnfe1) {
-            error = fnfe1.getMessage();
+            result.put("error", fnfe1.getMessage());
         } catch (Exception e) {
-            error = e.getMessage();
+            result.put("error", e.getMessage());
         }
 
-        return error;
+        return result;
     }
 
     private static String getFileMimeType(String fileName) {
