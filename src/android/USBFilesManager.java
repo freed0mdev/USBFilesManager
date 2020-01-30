@@ -4,7 +4,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.app.Activity;
-import android.support.v4.provider.DocumentFile;
+import androidx.documentfile.provider.DocumentFile;
 import android.provider.DocumentsContract;
 import android.content.Context;
 
@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.util.ArrayList;
 import java.io.ByteArrayInputStream;
 
 public class USBFilesManager extends CordovaPlugin {
