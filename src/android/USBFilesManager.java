@@ -106,15 +106,11 @@ public class USBFilesManager extends CordovaPlugin {
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    JSONObject result = new JSONObject();
-                    String errorCopy = null;
                     Uri uri = data.getData();
 
-                    JSONObject copyResult = copyFile(this.inputFileName, uri);
-                    result.put("copyResult", copyResult);
-                    result.put("uri", uri);
+                    JSONObject result = copyFile(this.inputFileName, uri);
 
-                    this.callback.success(result);
+                    this.callback.success(copyResult);
                 } catch (Exception err) {
                     this.callback.error("Failed to copy file: " + err.toString());
                 }
@@ -277,6 +273,7 @@ public class USBFilesManager extends CordovaPlugin {
         try {
             Uri newFileUri = pickedDir.createFile(mimeType, inputFile).getUri();
             out = cordova.getActivity().getContentResolver().openOutputStream(newFileUri);
+            result.put("uri", destinationDirUri);
             result.put("sourceFileSize", new File(inputPath).length());
             result.put("sourceFileExists", new File(inputPath).exists());
             in = new FileInputStream(inputPath);
