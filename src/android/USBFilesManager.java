@@ -290,13 +290,14 @@ public class USBFilesManager extends CordovaPlugin {
 //            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 //            in = new FileInputStream(inputPath + "/" + inputFile);
 //            copy(in, out);
+            sourceChannel.close();
+            destChannel.close();
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
             error = e.getMessage();
         } finally {
-            sourceChannel.close();
-            destChannel.close();
+
         }
 
         return error;
