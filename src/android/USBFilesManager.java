@@ -284,6 +284,7 @@ public class USBFilesManager extends CordovaPlugin {
             result.put("copyPosition", copy(in, out));
             result.put("destinationFileExists", newFile.exists());
             result.put("destinationFileSize", newFile.length());
+            result.put("destinationFileCanWrite", newFile.canWrite());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
