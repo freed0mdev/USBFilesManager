@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
 import java.util.ArrayList;
+import java.io.ByteArrayInputStream;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
@@ -296,11 +297,15 @@ public class USBFilesManager extends CordovaPlugin {
             result.put("sourceFileSize", new File(inputPath).length());
             result.put("sourceFileExists", new File(inputPath).exists());
             result.put("destinationFileExists", newFile.exists());
+            result.put("destinationFileTestExists", newFileTest.exists());
             result.put("destinationFileSize", newFile.length());
+            result.put("destinationFileTestSize", newFileTest.length());
             result.put("destinationFileCanWrite", newFile.canWrite());
+            result.put("destinationFileTestCanWrite", newFileTest.canWrite());
             result.put("copyResultTest", copy(inTest, outTest));
             result.put("copyResult", copy(in, out));
             result.put("destinationFileSizeAfterCopy", newFile.length());
+            result.put("destinationFileTestSizeAfterCopy", newFileTest.length());
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
