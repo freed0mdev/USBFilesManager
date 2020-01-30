@@ -110,7 +110,7 @@ public class USBFilesManager extends CordovaPlugin {
                     String errorCopy = null;
                     Uri uri = data.getData();
 
-                    copyResult = copyFile(this.inputFileName, uri);
+                    JSONObject copyResult = copyFile(this.inputFileName, uri);
                     result.put("copyResult", copyResult);
                     result.put("uri", uri);
 
