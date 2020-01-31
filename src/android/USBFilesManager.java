@@ -71,7 +71,7 @@ public class USBFilesManager extends CordovaPlugin {
 
 
             } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
-                this.saveFileToTargetDirectory(callbackContext, args.getString(0). args.getString(1));
+                this.saveFileToTargetDirectory(callbackContext, args.getString(0), args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE_FROM_USB)) {
                 this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
