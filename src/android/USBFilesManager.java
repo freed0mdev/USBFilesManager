@@ -116,7 +116,7 @@ public class USBFilesManager extends CordovaPlugin {
                             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
                             File f = new File(uri + "/" + fileName);
                             f.createNewFile();
-                            FileOutputStream fos = new FileOutputStream(f.getPath());
+                            FileOutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
                             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
 //                    try {
@@ -124,7 +124,7 @@ public class USBFilesManager extends CordovaPlugin {
 //
 //                        try {
 //                            is = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();;
-//                            os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());;
+//                            os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 //                            byte[] buffer = new byte[1024];
 //                            int length;
 //                            while ((length = is.read(buffer)) > 0) {
