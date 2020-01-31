@@ -40,8 +40,8 @@ public class USBFilesManager extends CordovaPlugin {
 
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
-    private String inputFileName = null;
-    private CallbackContext callback;
+    private static final String inputFileName = null;
+    private static final CallbackContext callback;
     private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
 
@@ -95,8 +95,6 @@ public class USBFilesManager extends CordovaPlugin {
 
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
-                String fileName = this.inputFileName;
-                CallbackContext callbackContext = this.callback;
                 new Thread() {
                     @Override
                     public void run() {
@@ -106,12 +104,12 @@ public class USBFilesManager extends CordovaPlugin {
 
 //                    String error = null;
                             DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
-                            String mimeType = getFileMimeType(fileName);
-                            DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
+                            String mimeType = getFileMimeType(this.inputFileName);
+                            DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
 
 //                            new DownloadFileFromURL().execute("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
 //                            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
-//                            Files.copy(in, new File(uri + "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
+//                            Files.copy(in, new File(uri + "/" + this.inputFileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
 //
 //                            URL website = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
 //                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
@@ -165,9 +163,9 @@ public class USBFilesManager extends CordovaPlugin {
 //                    result.put("error", error);
                             result.put("path", Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath());
                             result.put("uri", uri);
-                            callbackContext.success(result);
+                            this.callback.success(result);
                         } catch (Exception err) {
-                            callbackContext.error("Failed to copy file: " + err.toString());
+                            this.callback.error("Failed to copy file: " + err.toString());
                         }
                     }
                 }.start();
