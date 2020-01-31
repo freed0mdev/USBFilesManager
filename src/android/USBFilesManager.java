@@ -8,6 +8,7 @@ import android.support.v4.provider.DocumentFile;
 import android.provider.DocumentsContract;
 import android.content.Context;
 import java.net.URLConnection;
+import java.net.HttpURLConnection;
 
 import java.lang.Exception;
 
@@ -40,8 +41,8 @@ public class USBFilesManager extends CordovaPlugin {
 
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
-    private static final String inputFileName = null;
-    private static final CallbackContext callback;
+    private static String inputFileName = null;
+    private static CallbackContext callback;
     private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
 
