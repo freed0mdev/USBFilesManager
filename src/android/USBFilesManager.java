@@ -109,6 +109,8 @@ public class USBFilesManager extends CordovaPlugin {
                             JSONObject result = new JSONObject();
                             Uri uri = data.getData();
                             String error = null;
+                            InputStream is = null;
+                            OutputStream os = null;
 
                             DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             String mimeType = getFileMimeType(fileName);
@@ -117,8 +119,8 @@ public class USBFilesManager extends CordovaPlugin {
                             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
                             try {
-                                InputStream is = new BufferedInputStream(urlConnection.getInputStream());
-                                OutputStream os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+                                is = new BufferedInputStream(urlConnection.getInputStream());
+                                os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
                                 byte[] buf = new byte[512];
                                 while (true) {
