@@ -24,7 +24,6 @@ import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
-import java.io.ByteArrayInputStream;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
@@ -106,10 +105,12 @@ public class USBFilesManager extends CordovaPlugin {
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 try {
+                    JSONObject result = new JSONObject();
                     Uri uri = data.getData();
 
-                    JSONObject result = copyFile(this.inputFileName, uri);
-
+                    String errorCopy = copyFile(this.inputFileName, uri);
+                    result.put("error", errorCopy);
+                    result.put("url", ));
                     this.callback.success(result);
                 } catch (Exception err) {
                     this.callback.error("Failed to copy file: " + err.toString());
@@ -251,71 +252,36 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private static JSONObject copy(InputStream in, OutputStream out) throws IOException {
-        JSONObject result = new JSONObject();
-        try {
-            byte[] buffer = new byte[1024];
-            int i = 0;
-            int read;
-            result.put("cursorBefore", i);
-            while ((read = in.read(buffer)) > 0) {
-                result.put("lastBytes", read);
-                out.write(buffer, 0, read);
-                i++;
-            }
-            in.close();
-            out.close();
-            result.put("cursorAfter", i);
-        } catch (JSONException e) {
-
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) > 0) {
+            out.write(buffer, 0, read);
         }
-
-        return result;
+        in.close();
+        out.close();
     }
 
-    private JSONObject copyFile(String inputFile, Uri destinationDirUri) {
-        JSONObject result = new JSONObject();
+    private String copyFile(String inputFile, Uri destinationDirUri) {
         String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
         InputStream in = null;
-        InputStream inTest = null;
         OutputStream out = null;
-        OutputStream outTest = null;
         String error = null;
         DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), destinationDirUri);
         String mimeType = getFileMimeType(inputFile);
 
-        try {
-            DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-            DocumentFile newFileTest = pickedDir.createFile(mimeType, "Test" + inputFile);
-            in = new FileInputStream(inputPath);
-            inTest = new ByteArrayInputStream("test data".getBytes());
-            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-            outTest = cordova.getActivity().getContentResolver().openOutputStream(newFileTest.getUri());
+        DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
+        in = new FileInputStream(inputPath);
+        out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
-            result.put("pickedDir", pickedDir);
-            result.put("fileName", inputFile);
-            result.put("sourceFileSize", new File(inputPath).length());
-            result.put("sourceFileExists", new File(inputPath).exists());
-            result.put("destinationFileExists", newFile.exists());
-            result.put("destinationFileTestExists", newFileTest.exists());
-            result.put("destinationFileSize", newFile.length());
-            result.put("destinationFileTestSize", newFileTest.length());
-            result.put("destinationFileCanWrite", newFile.canWrite());
-            result.put("destinationFileTestCanWrite", newFileTest.canWrite());
-            result.put("copyResultTest", copy(inTest, outTest));
-            result.put("copyResult", copy(in, out));
-            result.put("destinationFileSizeAfterCopy", newFile.length());
-            result.put("destinationFileTestSizeAfterCopy", newFileTest.length());
+        try {
+            copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
         } catch (Exception e) {
             error = e.getMessage();
         }
 
-        try {
-            result.put("error", error);
-        } catch (JSONException e) { }
-
-        return result;
+        return error;
     }
 
     private static String getFileMimeType(String fileName) {
