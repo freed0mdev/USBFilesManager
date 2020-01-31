@@ -115,10 +115,8 @@ public class USBFilesManager extends CordovaPlugin {
 
                             URL website = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
                             ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                            File f = new File(getRealPathFromURI(newFile.getUri()));
-                            f.createNewFile();
-//                            FileOutputStream fos = new FileOutputStream(cordova.getActivity().getContentResolver().openFileDescriptor(newFile.getUri(), "rw").getFileDescriptor());
-//                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                            FileOutputStream fos = context.getContentResolver().openOutputStream(newFile.getUri());
+                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
 //                    try {
 //                        //            in = new FileInputStream(inputPath);
@@ -283,19 +281,5 @@ public class USBFilesManager extends CordovaPlugin {
     private static String getFileMimeType(String fileName) {
         String mimeType = "application/" + fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
         return mimeType;
-    }
-
-    private String getRealPathFromURI(Uri contentURI) {
-        String result;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) { // Source is Dropbox or other similar local file path
-            result = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
-        }
-        return result;
     }
 }
