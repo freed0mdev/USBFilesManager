@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.File;
+import java.net.URL;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
@@ -263,9 +264,9 @@ public class USBFilesManager extends CordovaPlugin {
     }
 
     private String copyFile(String inputFile, Uri destinationDirUri) {
-        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
+//        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
 //        InputStream in = null;
-        OutputStream out = null;
+//        OutputStream out = null;
         String error = null;
         DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), destinationDirUri);
         String mimeType = getFileMimeType(inputFile);
@@ -274,7 +275,7 @@ public class USBFilesManager extends CordovaPlugin {
         try {
 //            in = new FileInputStream(inputPath);
             InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
-            out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+            OutputStream out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
             copy(in, out);
         } catch (FileNotFoundException fnfe1) {
             error = fnfe1.getMessage();
