@@ -111,11 +111,14 @@ public class USBFilesManager extends CordovaPlugin {
 //                            new DownloadFileFromURL().execute("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
 //                            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
 //                            Files.copy(in, new File(uri + "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
+//
+//                            URL website = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+//                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+//                            FileOutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+//                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
-                            URL website = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
-                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-                            FileOutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+                            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
+                            Files.copy(in, Paths.get(newFile.getUri()), StandardCopyOption.REPLACE_EXISTING);
 
 //                    try {
 //                        //            in = new FileInputStream(inputPath);
