@@ -8,7 +8,6 @@ import android.support.v4.provider.DocumentFile;
 import android.provider.DocumentsContract;
 import android.content.Context;
 import java.net.URLConnection;
-import android.os.AsyncTask;
 
 import java.lang.Exception;
 
@@ -96,6 +95,9 @@ public class USBFilesManager extends CordovaPlugin {
 
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
+                String fileName = this.inputFileName;
+                CallbackContext callbackContext = this.callback;
+
                 new Thread() {
                     @Override
                     public void run() {
@@ -103,32 +105,70 @@ public class USBFilesManager extends CordovaPlugin {
                             JSONObject result = new JSONObject();
                             Uri uri = data.getData();
 
+//                    String error = null;
+                            DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
+                            String mimeType = getFileMimeType(fileName);
+                            DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
 
-
-                            new GetFileFromURL().execute(uri);
-
-//                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
-//                            URLConnection connection = url.openConnection();
-//                            InputStream in = connection.getInputStream();
+//                            new DownloadFileFromURL().execute("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+//                            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
+//                            Files.copy(in, new File(uri + "/" + fileName).toPath(), StandardCopyOption.REPLACE_EXISTING);
 //
-//                            OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+//                            URL website = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+//                            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+//                            FileOutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+//                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+
+//                            InputStream in = new InputStream(file);
+//                            Files.copy(Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath(), cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri()));
+                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+                            URLConnection connection = url.openConnection();
+                            InputStream in = connection.getInputStream();
+
+                            OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+
+                            byte[] buf = new byte[512];
+                            while (true) {
+                                int len = in.read(buf);
+                                if (len == -1) {
+                                    break;
+                                }
+                                fos.write(buf, 0, len);
+                            }
+                            in.close();
+                            fos.flush();
+                            fos.close();
+
+//                    try {
+//                        //            in = new FileInputStream(inputPath);
 //
-//                            byte[] buf = new byte[512];
-//                            while (true) {
-//                                int len = in.read(buf);
-//                                if (len == -1) {
-//                                    break;
-//                                }
-//                                fos.write(buf, 0, len);
+//                        try {
+//                            is = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();;
+//                            os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+//                            byte[] buffer = new byte[1024];
+//                            int length;
+//                            while ((length = is.read(buffer)) > 0) {
+//                                os.write(buffer, 0, length);
 //                            }
-//                            in.close();
-//                            fos.flush();
-//                            fos.close();
+//                        } finally {
+//                            is.close();
+//                            os.close();
+//                        }
 //
-//                            result.put("uri", uri);
-//                            this.callback.success(result);
+//                    } catch (FileNotFoundException fnfe1) {
+//                        error = fnfe1.getMessage();
+//                    } catch (Exception e) {
+//                        error = e.getMessage();
+//                    }
+//
+//                    return error;
+
+//                    result.put("error", error);
+                            result.put("path", Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath());
+                            result.put("uri", uri);
+                            callbackContext.success(result);
                         } catch (Exception err) {
-                            this.callback.error("Failed to copy file: " + err.toString());
+                            callbackContext.error("Failed to copy file: " + err.toString());
                         }
                     }
                 }.start();
@@ -258,51 +298,5 @@ public class USBFilesManager extends CordovaPlugin {
     private static String getFileMimeType(String fileName) {
         String mimeType = "application/" + fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
         return mimeType;
-    }
-
-    class GetFileFromURL extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), params[0]);
-                String mimeType = getFileMimeType(this.inputFileName);
-                DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
-
-                URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
-                URLConnection connection = url.openConnection();
-                InputStream in = connection.getInputStream();
-
-                OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-
-                byte[] buf = new byte[512];
-                while (true) {
-                    int len = in.read(buf);
-                    if (len == -1) {
-                        break;
-                    }
-                    fos.write(buf, 0, len);
-                }
-                in.close();
-                fos.flush();
-                fos.close();
-
-                TimeUnit.SECONDS.sleep(2);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            this.callback.success("OK");
-        }
     }
 }
