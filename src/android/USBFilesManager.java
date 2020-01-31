@@ -42,9 +42,8 @@ public class USBFilesManager extends CordovaPlugin {
 
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
-    private String inputFileName = null;
     private CallbackContext callback;
-    private String sourceURL;
+    private String sourceURL = null;
     private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
 
@@ -71,10 +70,10 @@ public class USBFilesManager extends CordovaPlugin {
 
 
             } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
-                this.saveFileToTargetDirectory(callbackContext, args.getString(0), args.getString(1));
+                this.saveFileToTargetDirectory(callbackContext, args.getString(0));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE_FROM_USB)) {
-                this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
+                this.copyFileFromUSB(callbackContext, args.getString(0));
                 return true;
             }
         } catch (JSONException err) {
@@ -98,7 +97,7 @@ public class USBFilesManager extends CordovaPlugin {
 
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
-                String fileName = this.inputFileName;
+                String fileName = getFileNameFromURL(this.sourceURL);
                 CallbackContext callbackContext = this.callback;
                 String sourceURL = this.sourceURL;
 
@@ -109,14 +108,14 @@ public class USBFilesManager extends CordovaPlugin {
                             JSONObject result = new JSONObject();
                             Uri uri = data.getData();
 
-                            DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             String mimeType = getFileMimeType(fileName);
+                            DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
                             URL url = new URL(sourceURL);
                             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                             try {
                                 InputStream is = new BufferedInputStream(urlConnection.getInputStream());
-                                OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+                                OutputStream os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
                                 byte[] buf = new byte[512];
                                 while (true) {
@@ -124,11 +123,11 @@ public class USBFilesManager extends CordovaPlugin {
                                     if (len == -1) {
                                         break;
                                     }
-                                    fos.write(buf, 0, len);
+                                    os.write(buf, 0, len);
                                 }
                                 is.close();
-                                fos.flush();
-                                fos.close();
+                                os.flush();
+                                os.close();
                             } finally {
                                 urlConnection.disconnect();
                             }
@@ -167,8 +166,7 @@ public class USBFilesManager extends CordovaPlugin {
         callbackContext.sendPluginResult(pluginResult);
     }
 
-    private void saveFileToTargetDirectory(CallbackContext callbackContext, String fileName, String sourceURL) {
-        this.inputFileName = fileName;
+    private void saveFileToTargetDirectory(CallbackContext callbackContext, String sourceURL) {
         this.sourceURL = sourceURL;
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Intent chooser = Intent.createChooser(intent, "Open folder");
@@ -205,11 +203,12 @@ public class USBFilesManager extends CordovaPlugin {
         }
     }
 
-    private void copyFileFromUSB(CallbackContext callbackContext, String fileUri, String fileName) {
+    private void copyFileFromUSB(CallbackContext callbackContext, String fileUri) {
         try {
             InputStream in = null;
             OutputStream out = null;
             String error = null;
+            String fileName = getFileNameFromURL(fileUri);
 
             String targetPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + fileName;
 
@@ -226,7 +225,6 @@ public class USBFilesManager extends CordovaPlugin {
 
             JSONObject result = new JSONObject();
             result.put("error", error);
-            result.put("fileName", fileName);
             result.put("url", targetPath);
             callbackContext.success(result);
         } catch (Exception err) {
@@ -267,5 +265,9 @@ public class USBFilesManager extends CordovaPlugin {
     private static String getFileMimeType(String fileName) {
         String mimeType = "application/" + fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
         return mimeType;
+    }
+    private static String getFileNameFromURL(String URL) {
+        String fileName = URL.substring(URL.lastIndexOf("/") + 1, URL.length());
+        return fileName;
     }
 }
