@@ -128,7 +128,7 @@ public class USBFilesManager extends CordovaPlugin {
                                     if (len == -1) {
                                         break;
                                     }
-                                    fos.write(buf, 0, len);
+                                    os.write(buf, 0, len);
                                 }
                             } catch (Exception e) {
                                 error = e.getMessage();
