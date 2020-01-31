@@ -114,6 +114,7 @@ public class USBFilesManager extends CordovaPlugin {
                             DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
                             URL url = new URL(sourceURL);
                             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+
                             try {
                                 InputStream is = new BufferedInputStream(urlConnection.getInputStream());
                                 OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
@@ -126,13 +127,16 @@ public class USBFilesManager extends CordovaPlugin {
                                     }
                                     fos.write(buf, 0, len);
                                 }
-                                is.close();
-                                fos.flush();
-                                fos.close();
+                            } catch (Exception e) {
+                                error = e.getMessage();
                             } finally {
+                                is.close();
+                                os.flush();
+                                os.close();
                                 urlConnection.disconnect();
                             }
 
+                            result.put("error", error);
                             result.put("uri", uri);
                             callbackContext.success(result);
                         } catch (Exception err) {
