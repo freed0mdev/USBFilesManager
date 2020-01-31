@@ -42,8 +42,9 @@ public class USBFilesManager extends CordovaPlugin {
 
     private static final String ACTION_SAVE_FILE_TO_USB = "saveFileToUSB";
     private static final String ACTION_COPY_FILE_FROM_USB = "copyFileFromUSB";
-    private static String inputFileName = null;
-    private static CallbackContext callback;
+    private String inputFileName = null;
+    private CallbackContext callback;
+    private String sourceURL;
     private static final int PICK_DIR_REQUEST = 1;
     private static final int PICK_FOLDER_REQUEST_FOR_SAVE = 2;
 
@@ -70,7 +71,7 @@ public class USBFilesManager extends CordovaPlugin {
 
 
             } else if (action.equals(USBFilesManager.ACTION_SAVE_FILE_TO_USB)) {
-                this.saveFileToTargetDirectory(callbackContext, args.getString(0));
+                this.saveFileToTargetDirectory(callbackContext, args.getString(0). args.getString(1));
                 return true;
             } else if (action.equals(USBFilesManager.ACTION_COPY_FILE_FROM_USB)) {
                 this.copyFileFromUSB(callbackContext, args.getString(0), args.getString(1));
@@ -99,6 +100,7 @@ public class USBFilesManager extends CordovaPlugin {
             if (resultCode == Activity.RESULT_OK) {
                 String fileName = this.inputFileName;
                 CallbackContext callbackContext = this.callback;
+                String sourceURL = this.sourceURL;
 
                 new Thread() {
                     @Override
@@ -110,7 +112,7 @@ public class USBFilesManager extends CordovaPlugin {
                             DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             String mimeType = getFileMimeType(fileName);
                             DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
-                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+                            URL url = new URL(sourceURL);
                             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                             try {
                                 InputStream is = new BufferedInputStream(urlConnection.getInputStream());
@@ -165,8 +167,9 @@ public class USBFilesManager extends CordovaPlugin {
         callbackContext.sendPluginResult(pluginResult);
     }
 
-    private void saveFileToTargetDirectory(CallbackContext callbackContext, String fileName) {
+    private void saveFileToTargetDirectory(CallbackContext callbackContext, String fileName, String sourceURL) {
         this.inputFileName = fileName;
+        this.sourceURL = sourceURL;
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         Intent chooser = Intent.createChooser(intent, "Open folder");
         cordova.startActivityForResult(this, chooser, USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE);
