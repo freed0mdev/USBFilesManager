@@ -118,7 +118,7 @@ public class USBFilesManager extends CordovaPlugin {
 //                            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
 
                             InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
-                            Files.copy(in, Paths.get(newFile.getUri()), StandardCopyOption.REPLACE_EXISTING);
+                            Files.copy(in, cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri()), StandardCopyOption.REPLACE_EXISTING);
 
 //                    try {
 //                        //            in = new FileInputStream(inputPath);
@@ -271,13 +271,8 @@ public class USBFilesManager extends CordovaPlugin {
             out.write(buffer, 0, read);
         }
         in.close();
+        out.flush();
         out.close();
-    }
-
-    private void copyFile(String inputFile, Uri destinationDirUri) {
-//        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
-//        InputStream in = null;
-//        OutputStream out = null;
     }
 
     private static String getFileMimeType(String fileName) {
