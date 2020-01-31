@@ -28,7 +28,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.Paths;
-import org.apache.commons.io.FileUtils;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.Channels;
 
 public class USBFilesManager extends CordovaPlugin {
     private static final String ACTION_SELECT_DIR_PATH = "selectDirPath";
