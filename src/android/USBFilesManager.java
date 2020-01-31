@@ -108,6 +108,7 @@ public class USBFilesManager extends CordovaPlugin {
                         try {
                             JSONObject result = new JSONObject();
                             Uri uri = data.getData();
+                            String error = null;
 
                             DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             String mimeType = getFileMimeType(fileName);
