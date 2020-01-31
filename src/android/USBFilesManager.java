@@ -95,8 +95,39 @@ public class USBFilesManager extends CordovaPlugin {
                     JSONObject result = new JSONObject();
                     Uri uri = data.getData();
 
-                    String errorCopy = copyFile(this.inputFileName, uri);
-                    result.put("error", errorCopy);
+//                    String error = null;
+//                    DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), destinationDirUri);
+//                    String mimeType = getFileMimeType(inputFile);
+//                    DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
+
+                    InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
+                    Files.copy(in, Paths.get(newFile), StandardCopyOption.REPLACE_EXISTING);
+
+//                    try {
+//                        //            in = new FileInputStream(inputPath);
+//
+//                        try {
+//                            is = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();;
+//                            os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());;
+//                            byte[] buffer = new byte[1024];
+//                            int length;
+//                            while ((length = is.read(buffer)) > 0) {
+//                                os.write(buffer, 0, length);
+//                            }
+//                        } finally {
+//                            is.close();
+//                            os.close();
+//                        }
+//
+//                    } catch (FileNotFoundException fnfe1) {
+//                        error = fnfe1.getMessage();
+//                    } catch (Exception e) {
+//                        error = e.getMessage();
+//                    }
+//
+//                    return error;
+
+//                    result.put("error", error);
                     result.put("uri", uri);
                     this.callback.success(result);
                 } catch (Exception err) {
@@ -228,39 +259,6 @@ public class USBFilesManager extends CordovaPlugin {
 //        String inputPath = cordova.getActivity().getApplicationContext().getExternalFilesDir(null).getAbsolutePath() + "/" + inputFile;
 //        InputStream in = null;
 //        OutputStream out = null;
-        String error = null;
-        DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), destinationDirUri);
-        String mimeType = getFileMimeType(inputFile);
-        DocumentFile newFile = pickedDir.createFile(mimeType, inputFile);
-
-        try {
-//            in = new FileInputStream(inputPath);
-            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
-            OutputStream out = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
-
-            InputStream is = null;
-            OutputStream os = null;
-            try {
-                is = in;
-                os = out;
-                byte[] buffer = new byte[1024];
-                int length;
-                while ((length = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, length);
-                }
-            } finally {
-                is.close();
-                os.close();
-            }
-
-//            copy(in, out);
-        } catch (FileNotFoundException fnfe1) {
-            error = fnfe1.getMessage();
-        } catch (Exception e) {
-            error = e.getMessage();
-        }
-
-        return error;
     }
 
     private static String getFileMimeType(String fileName) {
