@@ -93,7 +93,7 @@ public class USBFilesManager extends CordovaPlugin {
         else if (requestCode == USBFilesManager.PICK_FOLDER_REQUEST_FOR_SAVE && this.callback != null) {
             if (resultCode == Activity.RESULT_OK) {
                 String fileName = this.inputFileName;
-                ContextCallback contextCallback = this.callback;
+                CallbackContext callbackContext = this.callback;
                 new Thread() {
                     @Override
                     public void run() {
@@ -135,9 +135,9 @@ public class USBFilesManager extends CordovaPlugin {
 
 //                    result.put("error", error);
                             result.put("uri", uri);
-                            contextCallback.success(result);
+                            callbackContext.success(result);
                         } catch (Exception err) {
-                            contextCallback.error("Failed to copy file: " + err.toString());
+                            callbackContext.error("Failed to copy file: " + err.toString());
                         }
                     }
                 }.start();
