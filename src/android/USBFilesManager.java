@@ -118,7 +118,7 @@ public class USBFilesManager extends CordovaPlugin {
 
                             try {
                                 InputStream is = new BufferedInputStream(urlConnection.getInputStream());
-                                OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+                                OutputStream os = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
                                 byte[] buf = new byte[512];
                                 while (true) {
