@@ -105,8 +105,7 @@ public class USBFilesManager extends CordovaPlugin {
 
 
 
-                            GetFileFromURL getFileFromURL = new GetFileFromURL();
-                            getFileFromURL.execute(uri);
+                            new GetFileFromURL().execute(uri);
 
 //                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
 //                            URLConnection connection = url.openConnection();
@@ -271,7 +270,7 @@ public class USBFilesManager extends CordovaPlugin {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), params.getString(0));
+                DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), params[0]);
                 String mimeType = getFileMimeType(this.inputFileName);
                 DocumentFile newFile = pickedDir.createFile(mimeType, this.inputFileName);
 
