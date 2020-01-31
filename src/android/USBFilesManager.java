@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.support.v4.provider.DocumentFile;
 import android.provider.DocumentsContract;
 import android.content.Context;
+import java.net.URLConnection;
 
 import java.lang.Exception;
 
@@ -119,6 +120,23 @@ public class USBFilesManager extends CordovaPlugin {
 
 //                            InputStream in = new InputStream(file);
 //                            Files.copy(Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath(), cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri()));
+                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+                            URLConnection connection = url.openConnection();
+                            InputStream in = connection.getInputStream();
+
+                            OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+
+                            byte[] buf = new byte[512];
+                            while (true) {
+                                int len = in.read(buf);
+                                if (len == -1) {
+                                    break;
+                                }
+                                fos.write(buf, 0, len);
+                            }
+                            in.close();
+                            fos.flush();
+                            fos.close();
 
 //                    try {
 //                        //            in = new FileInputStream(inputPath);
