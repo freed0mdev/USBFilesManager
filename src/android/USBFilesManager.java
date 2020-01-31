@@ -97,17 +97,14 @@ public class USBFilesManager extends CordovaPlugin {
             if (resultCode == Activity.RESULT_OK) {
                 String fileName = this.inputFileName;
                 CallbackContext callbackContext = this.callback;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject result = new JSONObject();
-                            Uri uri = data.getData();
+                try {
+                    JSONObject result = new JSONObject();
+                    Uri uri = data.getData();
 
 //                    String error = null;
-                            DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
-                            String mimeType = getFileMimeType(fileName);
-                            DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
+                    DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
+                    String mimeType = getFileMimeType(fileName);
+                    DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
 
 //                            new DownloadFileFromURL().execute("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
 //                            InputStream in = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").openStream();
@@ -120,23 +117,23 @@ public class USBFilesManager extends CordovaPlugin {
 
 //                            InputStream in = new InputStream(file);
 //                            Files.copy(Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath(), cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri()));
-                            URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
-                            URLConnection connection = url.openConnection();
-                            InputStream in = connection.getInputStream();
+                    URL url = new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346");
+                    URLConnection connection = url.openConnection();
+                    InputStream in = connection.getInputStream();
 
-                            OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
+                    OutputStream fos = cordova.getActivity().getContentResolver().openOutputStream(newFile.getUri());
 
-                            byte[] buf = new byte[512];
-                            while (true) {
-                                int len = in.read(buf);
-                                if (len == -1) {
-                                    break;
-                                }
-                                fos.write(buf, 0, len);
-                            }
-                            in.close();
-                            fos.flush();
-                            fos.close();
+                    byte[] buf = new byte[512];
+                    while (true) {
+                        int len = in.read(buf);
+                        if (len == -1) {
+                            break;
+                        }
+                        fos.write(buf, 0, len);
+                    }
+                    in.close();
+                    fos.flush();
+                    fos.close();
 
 //                    try {
 //                        //            in = new FileInputStream(inputPath);
@@ -163,14 +160,12 @@ public class USBFilesManager extends CordovaPlugin {
 //                    return error;
 
 //                    result.put("error", error);
-                            result.put("path", Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath());
-                            result.put("uri", uri);
-                            callbackContext.success(result);
-                        } catch (Exception err) {
-                            callbackContext.error("Failed to copy file: " + err.toString());
-                        }
-                    }
-                }.start();
+                    result.put("path", Paths.get(new URL("http://54.156.240.184:50420/backups/5e130c0a9f274b377d7005a4/backup-31012020092346").toURI()).toFile().toPath());
+                    result.put("uri", uri);
+                    callbackContext.success(result);
+                } catch (Exception err) {
+                    callbackContext.error("Failed to copy file: " + err.toString());
+                }
             } else {
                 this.callback.error("Folder URI was null.");
             }
