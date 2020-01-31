@@ -18,10 +18,10 @@ exports.getFiles = function (dirUri, onSuccess, onFail) {
 
 
 
-exports.saveFileToUSB = function (sourceFileURL, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [sourceFileURL]);
+exports.saveFileToUSB = function (fileName, sourceFileURL, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "saveFileToUSB", [fileName, sourceFileURL]);
 };
 
-exports.copyFileFromUSB = function (uri, onSuccess, onFail) {
-    exec(onSuccess, onFail, "USBFilesManager", "copyFileFromUSB", [uri]);
+exports.copyFileFromUSB = function (uri, fileName, onSuccess, onFail) {
+    exec(onSuccess, onFail, "USBFilesManager", "copyFileFromUSB", [uri, fileName]);
 };
