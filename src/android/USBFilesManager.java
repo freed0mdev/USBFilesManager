@@ -112,6 +112,8 @@ public class USBFilesManager extends CordovaPlugin {
                             DocumentFile pickedDir = DocumentFile.fromTreeUri(cordova.getActivity(), uri);
                             String mimeType = getFileMimeType(fileName);
                             DocumentFile newFile = pickedDir.createFile(mimeType, fileName);
+                            String path =  uri.toString() + fileName + "Test";
+                            new File(path).createFile();
                             URL url = new URL(sourceURL);
                             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                             try {
